@@ -148,7 +148,7 @@ function ChatMessage({ message }) {
           {isUser ? (
             <User className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
           ) : (
-            <Sparkles className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
+            <img src="/chat-bot.gif" alt="AI Assistant" className="w-6 h-6 rounded-full object-cover" />
           )}
         </div>
 
@@ -213,7 +213,7 @@ function AIChatWidget() {
         tooltipTimerRef.current = setInterval(() => {
           setShowTooltip(true);
           setTimeout(() => setShowTooltip(false), 4000);
-        }, 60000);
+        }, 5000);
       }, 4000);
       return () => clearTimeout(hideTimer);
     }, 5000);
@@ -320,14 +320,14 @@ function AIChatWidget() {
             initial={{ opacity: 0, scale: 0.9, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 12 }}
-            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="fixed bottom-24 right-6 z-[9998] w-[380px] h-[560px] sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:h-[560px] flex flex-col overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(22,25,29,0.95)] backdrop-blur-xl shadow-[0_16px_48px_rgba(0,0,0,0.55)]"
             style={{ transformOrigin: "bottom right" }}
           >
             {/* ── Header ── */}
             <div className="flex items-center gap-3 px-4 h-14 shrink-0 bg-white/[0.02] border-b border-white/[0.08]">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-amber-600 flex items-center justify-center shrink-0 shadow-[var(--shadow-glow)]">
-                <Sparkles className="w-4 h-4 text-[var(--text-inverse)]" />
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+                <img src="/chat-bot.gif" alt="AI Assistant" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold text-[var(--text-primary)] leading-tight">
@@ -380,8 +380,8 @@ function AIChatWidget() {
                 {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                   <div className="flex justify-start mb-3">
                     <div className="flex items-start gap-2">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent-primary)]/20 to-amber-600/10 flex items-center justify-center shrink-0">
-                        <Sparkles className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+                        <img src="/chat-bot.gif" alt="AI Assistant" className="w-full h-full object-cover" />
                       </div>
                       <div className="rounded-2xl rounded-bl-md px-3.5 py-3 bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm">
                         <TypingIndicator />
@@ -489,7 +489,7 @@ function AIChatWidget() {
                 exit={{ rotate: -90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <Sparkles className="w-6 h-6 text-[var(--text-inverse)]" />
+                <img src="/chat-bot.gif" alt="AI Assistant" className="w-8 h-8 rounded-full object-cover" />
               </motion.div>
             )}
           </AnimatePresence>
