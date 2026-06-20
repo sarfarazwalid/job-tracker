@@ -441,7 +441,7 @@ function AIChatWidget() {
               <div className="flex items-center gap-2">
                 <MessageCircle className="w-4 h-4 text-[var(--accent-primary)]" />
                 <span className="text-xs text-[var(--text-secondary)]">
-                  I am here, for your assistance!
+                I am here, for your assistance!😊
                 </span>
               </div>
               <div className="absolute -bottom-1.5 right-5 w-3 h-3 bg-[#16191D] border-r border-b border-white/[0.08] rotate-45 backdrop-blur-sm" />

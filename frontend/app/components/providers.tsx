@@ -2,7 +2,6 @@
 
 import { type ReactNode, useState, useEffect, createContext, useContext } from "react";
 import { Toaster } from "sonner";
-import AIChatWidget from "./AIChatWidget";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -58,7 +57,6 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
       {children}
-      <AIChatWidget />
       <Toaster
         theme="dark"
         position="top-right"

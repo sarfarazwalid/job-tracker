@@ -151,7 +151,7 @@ function DashboardContent() {
           {/* Loading */}
           {loading ? (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mb-8">
                 {[...Array(6)].map((_, i) => (
                   <StatsCardSkeleton key={i} />
                 ))}
@@ -164,22 +164,22 @@ function DashboardContent() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                 {statCards.map((stat, i) => (
                   <RevealOnScroll key={stat.label} delay={i * 0.05}>
-                    <Card hover className="!border-orange-500/30 hover:!border-orange-500/50">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-medium text-[var(--text-muted)] uppercase tracking-wider leading-tight">{stat.label}</span>
-                        <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center shrink-0", stat.bg, stat.color)}>
-                          {stat.icon}
-                        </div>
+                  <Card hover className="h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] sm:text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">{stat.label}</span>
+                      <div className={cn("h-6 w-6 sm:h-7 sm:w-7 rounded-lg bg-[var(--bg-elevated)] flex items-center justify-center", stat.color)}>
+                        {stat.icon}
                       </div>
-                      <div className="text-3xl font-bold text-[var(--text-primary)]">
-                        <CountUp target={stat.value} duration={1} />{stat.suffix || ""}
-                      </div>
-                    </Card>
+                    </div>
+                    <div className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+                      <CountUp target={stat.value} duration={1} />{stat.suffix || ""}
+                    </div>
+                  </Card>
                   </RevealOnScroll>
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
                 {/* Upcoming Interviews */}
                 <RevealOnScroll delay={0.1}>
                   <Card className="h-full !border-orange-500/20">
@@ -291,7 +291,7 @@ function DashboardContent() {
                 <RevealOnScroll delay={0.2}>
                   <Card className="mt-6 !border-orange-500/20">
                     <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Application Pipeline</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
                       {Object.entries(byStatus)
                         .filter(([, count]) => count > 0)
                         .sort(([, a], [, b]) => b - a)

@@ -248,7 +248,7 @@ export default function AIInsightsPage() {
                             { value: "Manager", label: "Manager" },
                           ]}
                           value={interviewForm.roleLevel}
-                          onChange={(e) => setInterviewForm({ ...interviewForm, roleLevel: e.target.value })}
+                          onChange={(val) => setInterviewForm({ ...interviewForm, roleLevel: val })}
                         />
                       </div>
                     </div>

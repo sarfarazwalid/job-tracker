@@ -202,7 +202,7 @@ function PricingDropdown({ onItemClick }: { onItemClick?: () => void }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[380px] z-50"
+      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[min(380px,calc(100vw-2rem))] z-50"
     >
       <div className="relative">
         {/* Arrow */}
@@ -290,7 +290,7 @@ function FeaturesDropdown({ onItemClick }: { onItemClick?: () => void }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[560px] z-50"
+      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[min(560px,calc(100vw-2rem))] z-50"
     >
       <div className="relative">
         {/* Arrow */}
@@ -407,7 +407,7 @@ function AIFeaturesDropdown({ onItemClick }: { onItemClick?: () => void }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[500px] z-50"
+      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[min(500px,calc(100vw-2rem))] z-50"
     >
       <div className="relative">
         {/* Arrow */}
@@ -521,7 +521,7 @@ function HowItWorksDropdown({ onItemClick }: { onItemClick?: () => void }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[460px] z-50"
+      className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[min(460px,calc(100vw-2rem))] z-50"
     >
       <div className="relative">
         {/* Arrow */}

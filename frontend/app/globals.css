@@ -187,7 +187,26 @@ body::before {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
 }
 
-/* Native select dropdown — match dark theme */
+/* Browser autofill override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-card) inset !important;
+  box-shadow: 0 0 0px 1000px var(--bg-card) inset !important;
+  background-color: var(--bg-card) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  caret-color: var(--text-primary) !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}
+
+/* Native select dropdown — match dark theme with orange accent */
 select {
   background-color: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
@@ -201,17 +220,19 @@ select optgroup {
   padding: 8px 12px;
 }
 
+/* Force orange accent on hover/active/selected for all browsers */
 select option:hover,
 select option:active,
 select option:checked {
+  background: #FF6B00 !important;
   background-color: #FF6B00 !important;
   color: #0D0F12 !important;
 }
 
-select::selection,
-select option::selection {
-  background-color: #FF6B00;
-  color: #0D0F12;
+/* Chrome/Edge specific: override default blue highlight on focused select */
+select:focus-visible {
+  outline: 2px solid rgba(255, 107, 0, 0.5);
+  outline-offset: 1px;
 }
 
 select:focus {
@@ -341,6 +362,7 @@ select:focus {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   contain: layout style paint;
+  max-width: 100%;
 }
 
 .landing-float-delayed {
@@ -350,6 +372,7 @@ select:focus {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   contain: layout style paint;
+  max-width: 100%;
 }
 
 .landing-float-slow {
@@ -359,6 +382,7 @@ select:focus {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   contain: layout style paint;
+  max-width: 100%;
 }
 
 /* ── Gradient mesh background ── */
@@ -382,8 +406,8 @@ select:focus {
 .landing-timeline-line {
   position: absolute;
   top: 28px;
-  left: 28px;
-  right: 28px;
+  left: 14px;
+  right: 14px;
   height: 2px;
   background: linear-gradient(
     90deg,
@@ -393,6 +417,12 @@ select:focus {
   );
   z-index: 0;
   transform: translateZ(0);
+}
+
+@media (max-width: 768px) {
+  .landing-timeline-line {
+    display: none;
+  }
 }
 
 /* ── Landing nav glass ── */
@@ -433,20 +463,20 @@ select:focus {
 
 /* ── Landing glass section — seamless transparent sections on glass parent ── */
 .landing-glass-section {
-  padding: 6rem 1rem;
+  padding: 4rem 1rem;
   position: relative;
-  overflow: visible;
+  overflow-x: hidden;
 }
 
 @media (min-width: 640px) {
   .landing-glass-section {
-    padding: 7rem 1.5rem;
+    padding: 5rem 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .landing-glass-section {
-    padding: 8rem 2rem;
+    padding: 6rem 2rem;
   }
 }
 
@@ -493,9 +523,21 @@ select:focus {
 /* ── Mobile fixes for landing ── */
 @media (max-width: 640px) {
   .landing-section {
-    padding: 4rem 1rem;
+    padding: 3rem 0.75rem;
   }
   
+  .landing .landing-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Prevent horizontal scroll at all zoom levels */
+  .landing .landing-hero-grid > div {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
   .landing .landing-hero-grid {
     grid-template-columns: 1fr;
   }

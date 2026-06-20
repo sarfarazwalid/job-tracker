@@ -2,7 +2,7 @@
 
 import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type TextareaHTMLAttributes, type ReactNode } from "react";
 import { cn } from "../lib/utils";
-import { GlassCard, AmberButton, StatusTag } from "./primitives";
+import { GlassCard, AmberButton, StatusTag, AnimatedDropdown } from "./primitives";
 
 /* ──────── Button (re-export) ──────── */
 export { AmberButton as Button };
@@ -88,41 +88,37 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 );
 Textarea.displayName = "Textarea";
 
-/* ──────── Select ──────── */
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+/* ──────── Select (custom dropdown — no native blue highlight) ──────── */
+interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
   label?: string;
   options: { value: string; label: string }[];
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, label, options, id, ...props }, ref) => {
+export const Select = forwardRef<HTMLDivElement, SelectProps>(
+  ({ className, label, options, value, onChange, required, disabled, id }, ref) => {
     const selectId = id || label?.toLowerCase().replace(/\s+/g, "-");
+    const isPlaceholder = !value || !options.find((o) => o.value === value);
+    // Filter out empty placeholder option so it never appears as a highlighted selection in the dropdown
+    const selectableOptions = options.filter((o) => o.value !== "");
+
     return (
-      <div className="space-y-1.5">
+      <div className={cn("space-y-1.5", disabled && "opacity-50 pointer-events-none")} ref={ref}>
         {label && (
           <label htmlFor={selectId} className="block text-sm font-medium text-[var(--text-secondary)]">
             {label}
+            {required && <span className="text-[var(--status-error)] ml-0.5">*</span>}
           </label>
         )}
-        <select
-          ref={ref}
-          id={selectId}
-          className={cn(
-            "w-full h-10 px-3 bg-white/[0.04] border border-white/[0.08] rounded-[var(--radius-md)] text-sm text-[var(--text-primary)] backdrop-blur-sm",
-            "focus:outline-none focus:border-[var(--accent-primary)] focus:ring-1 focus:ring-[var(--accent-primary)]/30",
-            "transition-all duration-[var(--transition-fast)]",
-            "appearance-none bg-no-repeat bg-[right_12px_center]",
-            "bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")]",
-            className
-          )}
-          {...props}
-        >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <AnimatedDropdown
+          options={selectableOptions}
+          value={value}
+          onChange={onChange || (() => {})}
+          placeholder={isPlaceholder ? options[0]?.label || "Select..." : undefined}
+          className={className}
+          triggerLabel={label}
+        />
       </div>
     );
   }

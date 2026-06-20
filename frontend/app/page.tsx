@@ -183,19 +183,19 @@ export default function Home() {
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1.3, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="relative hidden lg:block"
+                className="relative hidden lg:block w-full"
               >
-                <div className="relative w-full min-h-[660px] h-auto overflow-visible flex flex-col justify-between py-8">
-                  {/* Top row */}
-                  <div className="flex justify-between items-start gap-6">
-                    <div className="landing-float w-[400px] bg-[var(--landing-glass-bg)] rounded-2xl shadow-lg border border-[var(--landing-glass-border)] p-6 z-10">
+                <div className="relative w-full max-w-[680px] mx-auto">
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:gap-y-12 items-start">
+                    {/* Top left: Career Command Center */}
+                    <div className="landing-float w-full max-w-[400px] justify-self-end bg-[var(--landing-glass-bg)] rounded-2xl shadow-lg border border-[var(--landing-glass-border)] p-5 sm:p-6 z-10">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl bg-[var(--landing-accent-light)] flex items-center justify-center">
                           <BarChart3 className="h-5 w-5 text-[var(--landing-accent)]" />
                         </div>
                         <span className="text-base font-bold text-[var(--landing-text-primary)]">Career Command Center</span>
                       </div>
-                      <p className="text-xs text-[var(--landing-text-secondary)] leading-relaxed mb-3 line-clamp-3">
+                      <p className="text-xs text-[var(--landing-text-secondary)] leading-relaxed mb-3">
                         Monitor your entire job search from one centralized workspace. Track applications, upcoming interviews, company interactions, and career progress in real time.
                       </p>
                       <p className="text-[11px] text-[var(--landing-text-muted)] italic">
@@ -203,12 +203,13 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="landing-float-delayed w-[400px] bg-[var(--landing-glass-bg)] rounded-2xl shadow-lg border border-[var(--landing-glass-border)] p-6 z-20">
+                    {/* Top right: Application Pipeline */}
+                    <div className="landing-float-delayed w-full max-w-[400px] justify-self-start bg-[var(--landing-glass-bg)] rounded-2xl shadow-lg border border-[var(--landing-glass-border)] p-5 sm:p-6 z-20 md:mt-8">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
                         <span className="text-sm font-semibold text-green-400">Application Pipeline</span>
                       </div>
-                      <p className="text-xs text-[var(--landing-text-secondary)] leading-relaxed mb-3 line-clamp-3">
+                      <p className="text-xs text-[var(--landing-text-secondary)] leading-relaxed mb-3">
                         Visualize every stage of your job search, from newly discovered opportunities to final offers.
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -218,13 +219,11 @@ export default function Home() {
                         <span className="px-3 py-1 text-xs font-semibold bg-green-500/10 text-green-400 rounded-full border border-green-500/20">Offer</span>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Bottom row */}
-                  <div className="flex justify-between items-start gap-6 mt-16">
-                    <div className="landing-float-slow w-[400px] bg-[var(--landing-glass-bg)] rounded-2xl shadow-lg border border-[var(--landing-glass-border)] p-5 z-10">
+                    {/* Bottom left: Career Analytics */}
+                    <div className="landing-float-slow w-full max-w-[400px] justify-self-end bg-[var(--landing-glass-bg)] rounded-2xl shadow-lg border border-[var(--landing-glass-border)] p-4 sm:p-5 z-10">
                       <div className="text-sm font-bold text-[var(--landing-text-primary)] mb-2">Career Analytics</div>
-                      <p className="text-xs text-[var(--landing-text-secondary)] leading-relaxed mb-4 line-clamp-2">
+                      <p className="text-xs text-[var(--landing-text-secondary)] leading-relaxed mb-4">
                         Understand how your job search is performing with insights into application activity and interview conversion rates.
                       </p>
                       <div className="flex items-end gap-2.5 mb-2">
@@ -238,12 +237,13 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="landing-float w-[400px] bg-gradient-to-br from-[#FF6B00] to-[#E85D04] rounded-2xl shadow-xl p-5 text-white z-30">
+                    {/* Bottom right: AI Resume Match Score */}
+                    <div className="landing-float w-full max-w-[400px] justify-self-start bg-gradient-to-br from-[#FF6B00] to-[#E85D04] rounded-2xl shadow-xl p-4 sm:p-5 text-white z-30 md:-mt-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Sparkles className="h-4 w-4 flex-shrink-0" />
                         <span className="text-sm font-semibold opacity-90 leading-tight">AI Resume Match Score</span>
                       </div>
-                      <p className="text-[11px] text-white/70 leading-relaxed mb-4 line-clamp-2">
+                      <p className="text-[11px] text-white/70 leading-relaxed mb-4">
                         Instantly compare your resume against job requirements and receive a compatibility score.
                       </p>
                       <div className="text-4xl font-extrabold mono-number">86%</div>
@@ -443,22 +443,17 @@ export default function Home() {
             </p>
           </div>
 
-          <StaggerContainer className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-sm font-medium text-[var(--landing-text-primary)]">
+          <StaggerContainer className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-sm font-medium text-[var(--landing-text-primary)]">
             {["Applications", "Tracking", "Analytics", "AI Insights"].map(
               (step, i) => (
-                <StaggerItem key={step}>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-9 w-9 rounded-full bg-[var(--landing-accent)] text-white flex items-center justify-center text-xs font-bold shadow-md shadow-orange-200">
-                        {i + 1}
-                      </div>
-                      <span className="px-4 py-2 rounded-xl bg-[#0D0F12] border border-[var(--landing-glass-border)] shadow-sm font-semibold">
-                        {step}
-                      </span>
+                <StaggerItem key={step} className="flex items-center justify-center">
+                  <div className="flex items-center gap-2 sm:gap-2.5">
+                    <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-[var(--landing-accent)] text-white flex items-center justify-center text-xs font-bold shadow-md shadow-orange-200 shrink-0">
+                      {i + 1}
                     </div>
-                    {i < 3 && (
-                      <ArrowRight className="h-4 w-4 text-[var(--landing-text-muted)] hidden sm:block" />
-                    )}
+                    <span className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#0D0F12] border border-[var(--landing-glass-border)] shadow-sm font-semibold whitespace-nowrap">
+                      {step}
+                    </span>
                   </div>
                 </StaggerItem>
               )
@@ -826,7 +821,7 @@ export default function Home() {
                     <h3 className="text-base font-bold text-[var(--landing-text-primary)] mb-2">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-[var(--landing-text-secondary)] leading-relaxed max-w-[200px] mx-auto">
+                    <p className="text-sm text-[var(--landing-text-secondary)] leading-relaxed max-w-[220px] mx-auto">
                       {item.description}
                     </p>
                   </div>

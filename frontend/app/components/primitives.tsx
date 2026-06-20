@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, type ReactNode } from "react";
+import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "../lib/utils";
 import { Check, ChevronDown } from "lucide-react";
@@ -115,13 +116,31 @@ interface AnimatedDropdownProps {
 
 export function AnimatedDropdown({ options, value, onChange, placeholder = "Select", className, triggerLabel }: AnimatedDropdownProps) {
   const [open, setOpen] = useState(false);
+  const coordsRef = useRef({ top: 0, left: 0, width: 180 });
   const ref = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
 
   const selected = options.find((o) => o.value === value);
 
+  const toggleOpen = useCallback(() => {
+    if (!open && ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      coordsRef.current = {
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: Math.max(ref.current.offsetWidth, 180),
+      };
+    }
+    setOpen((v) => !v);
+  }, [open]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      // Close only if click is outside both the trigger and the portal panel
+      const outsideTrigger = ref.current && !ref.current.contains(target);
+      const outsidePortal = portalRef.current && !portalRef.current.contains(target);
+      if (outsideTrigger && outsidePortal) {
         setOpen(false);
       }
     };
@@ -140,7 +159,7 @@ export function AnimatedDropdown({ options, value, onChange, placeholder = "Sele
     <div ref={ref} className={cn("relative inline-block text-left", className)}>
       <motion.button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggleOpen}
         className={cn(
           "inline-flex items-center justify-between gap-2 h-9 pl-3 pr-2 rounded-[var(--radius-md)] border border-[rgba(255,255,255,0.08)] bg-[var(--bg-card)] backdrop-blur-md text-sm text-[var(--text-primary)] shadow-sm transition-colors",
           "hover:bg-[var(--bg-card-hover)] focus:outline-none focus:border-[var(--accent-primary)] cursor-pointer"
@@ -152,43 +171,53 @@ export function AnimatedDropdown({ options, value, onChange, placeholder = "Sele
           {triggerLabel ? `${triggerLabel}: ` : ""}
           {selected ? selected.label : placeholder}
         </span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+        <span className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
           <ChevronDown className="h-4 w-4 text-[var(--text-muted)]" />
-        </motion.span>
+        </span>
       </motion.button>
 
-      <AnimatePresence>
-        {open && (
+      {open &&
+        createPortal(
           <motion.div
+            ref={portalRef}
             initial={{ opacity: 0, scale: 0.96, y: -4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ type: "spring", stiffness: 300, damping: 24 }}
-            className="absolute right-0 z-20 mt-1.5 w-48 origin-top-right rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#16191D]/95 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden"
+            className="fixed z-[9999] rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#16191D]/95 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden"
+            style={{
+              top: coordsRef.current.top,
+              left: coordsRef.current.left,
+              width: coordsRef.current.width,
+            }}
           >
             <div className="py-1">
-              {options.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => {
-                    onChange(opt.value);
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full items-center justify-between px-3 py-2 text-sm transition-colors duration-150",
-                    opt.value === value
-                      ? "bg-[var(--accent-glow)] text-[var(--accent-primary)]"
-                      : "text-[var(--text-secondary)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent-primary)]"
-                  )}
-                >
-                  <span className="truncate">{opt.label}</span>
-                  {opt.value === value && <span className="h-1.5 w-1.5 rounded-full bg-[var(--status-success)]" />}
-                </button>
-              ))}
+              {options.map((opt) => {
+                const isSelected = opt.value === value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onChange(opt.value);
+                      requestAnimationFrame(() => setOpen(false));
+                    }}
+                    className={cn(
+                      "flex w-full items-center justify-between px-3 py-2 text-sm transition-colors duration-150",
+                      isSelected
+                        ? "bg-[var(--accent-glow-strong)] text-[var(--accent-primary)] font-medium"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent-primary)]"
+                    )}
+                  >
+                    <span className="truncate">{opt.label}</span>
+                    {isSelected && <Check className="h-3.5 w-3.5 shrink-0" />}
+                  </button>
+                );
+              })}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </motion.div>,
+          document.body
+        )
+      }
     </div>
   );
 }

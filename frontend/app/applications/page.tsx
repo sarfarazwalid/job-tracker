@@ -33,6 +33,7 @@ import {
   Badge,
   EmptyState,
 } from "../components/ui";
+import { AnimatedDropdown } from "../components/primitives";
 import { ApplicationListSkeleton, StatsCardSkeleton } from "../components/skeletons";
 import { formatRelativeDate, cn } from "../lib/utils";
 
@@ -306,7 +307,7 @@ function ApplicationsContent() {
                         label="Status"
                         options={STATUS_OPTIONS}
                         value={newApp.status}
-                        onChange={(e) => setNewApp({ ...newApp, status: e.target.value })}
+                        onChange={(val) => setNewApp({ ...newApp, status: val })}
                       />
                       <Input
                         label="Location"
@@ -383,34 +384,27 @@ function ApplicationsContent() {
                 </div>
 
                 {/* Status Filter */}
-                <div className="relative">
-                  <select
+                <div className="relative pl-8">
+                  <SlidersHorizontal className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)] pointer-events-none z-10" />
+                  <AnimatedDropdown
+                    options={[{ value: "", label: "All Statuses" }, ...STATUS_OPTIONS]}
                     value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="h-9 pl-8 pr-8 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent-primary)] appearance-none cursor-pointer"
-                  >
-                    <option value="">All Statuses</option>
-                    {STATUS_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                  <SlidersHorizontal className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)] pointer-events-none" />
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)] pointer-events-none" />
+                    onChange={(val: string) => setStatusFilter(val)}
+                    placeholder="All Statuses"
+                    className="w-auto"
+                  />
                 </div>
 
                 {/* Sort */}
-                <div className="relative">
-                  <select
+                <div className="relative pl-8">
+                  <ArrowUpDown className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)] pointer-events-none z-10" />
+                  <AnimatedDropdown
+                    options={SORT_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="h-9 pl-8 pr-8 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-lg text-sm text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent-primary)] appearance-none cursor-pointer"
-                  >
-                    {SORT_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                  <ArrowUpDown className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)] pointer-events-none" />
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)] pointer-events-none" />
+                    onChange={(val: string) => setSortBy(val)}
+                    placeholder="Newest First"
+                    className="w-auto"
+                  />
                 </div>
 
                 {/* Clear Filters */}
@@ -452,9 +446,9 @@ function ApplicationsContent() {
           {/* Applications Table */}
           {!isLoading && applications.length > 0 && (
             <RevealOnScroll delay={0.15}>
-              <div className="bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl overflow-hidden">
+              <div className="bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl overflow-x-auto">
                 {/* Table header - Desktop */}
-                <div className="hidden lg:grid lg:grid-cols-[1fr_140px_100px_120px_100px_80px] gap-4 px-5 py-3 text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider border-b border-[var(--border-default)] bg-[var(--bg-card)]">
+                <div className="hidden lg:grid lg:grid-cols-[minmax(180px,1fr)_minmax(130px,140px)_minmax(90px,100px)_minmax(100px,120px)_minmax(80px,100px)_minmax(70px,80px)] gap-4 px-5 py-3 text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider border-b border-[var(--border-default)] bg-[var(--bg-card)] min-w-[640px]">
                   <div>Company / Position</div>
                   <div>Status</div>
                   <div>Location</div>
@@ -475,7 +469,7 @@ function ApplicationsContent() {
                         className="group"
                       >
                         {/* Desktop Row */}
-                        <div className="hidden lg:grid lg:grid-cols-[1fr_140px_100px_120px_100px_80px] gap-4 items-center px-5 py-4 hover:bg-[var(--bg-card-hover)] transition-colors">
+                        <div className="hidden lg:grid lg:grid-cols-[minmax(180px,1fr)_minmax(130px,140px)_minmax(90px,100px)_minmax(100px,120px)_minmax(80px,100px)_minmax(70px,80px)] gap-4 items-center px-5 py-4 hover:bg-[var(--bg-card-hover)] transition-colors min-w-[640px] relative">
                           <div className="min-w-0">
                             <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate">{app.companyName}</h3>
                             <p className="text-xs text-[var(--text-secondary)] truncate">{app.jobTitle}</p>
@@ -484,15 +478,12 @@ function ApplicationsContent() {
                             )}
                           </div>
                           <div>
-                            <select
+                            <AnimatedDropdown
+                              options={ALL_STATUSES.map((s) => ({ value: s, label: STATUS_CONFIG[s]?.label || s }))}
                               value={app.status}
-                              onChange={(e) => handleStatusChange(app._id, e.target.value)}
-                              className="text-xs bg-transparent border border-[var(--border-default)] rounded-md px-2 py-1 text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent-primary)] cursor-pointer"
-                            >
-                              {ALL_STATUSES.map((s) => (
-                                <option key={s} value={s}>{STATUS_CONFIG[s]?.label || s}</option>
-                              ))}
-                            </select>
+                              onChange={(val) => handleStatusChange(app._id, val)}
+                              className="text-xs"
+                            />
                           </div>
                           <div className="text-xs text-[var(--text-muted)] truncate">
                             {app.location ? (
@@ -544,15 +535,12 @@ function ApplicationsContent() {
                             {app.aiFitScore && <span className="text-emerald-400 font-medium">AI: {app.aiFitScore}%</span>}
                           </div>
                           <div className="flex items-center gap-2">
-                            <select
+                            <AnimatedDropdown
+                              options={ALL_STATUSES.map((s) => ({ value: s, label: STATUS_CONFIG[s]?.label || s }))}
                               value={app.status}
-                              onChange={(e) => handleStatusChange(app._id, e.target.value)}
-                              className="h-7 px-2 text-xs bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-md text-[var(--text-secondary)] focus:outline-none"
-                            >
-                              {ALL_STATUSES.map((s) => (
-                                <option key={s} value={s}>{STATUS_CONFIG[s]?.label || s}</option>
-                              ))}
-                            </select>
+                              onChange={(val) => handleStatusChange(app._id, val)}
+                              className="text-xs"
+                            />
                             <button
                               onClick={() => handleDelete(app._id)}
                               className="h-7 w-7 flex items-center justify-center rounded text-[var(--text-muted)] hover:text-red-400"
