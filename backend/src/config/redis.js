@@ -14,13 +14,17 @@ const isRedisConfigured = () => {
 };
 
 const createRedisClient = (name = 'default') => {
-  const client = new Redis({
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    password: env.REDIS_PASSWORD || undefined,
-    maxRetriesPerRequest: null,
-    enableReadyCheck: true,
-    lazyConnect: true,
+const client = new Redis({
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
+  password: env.REDIS_PASSWORD || undefined,
+
+  // Required for Upstash Redis
+  tls: {},
+
+  maxRetriesPerRequest: null,
+  enableReadyCheck: true,
+  lazyConnect: true,
     retryStrategy(times) {
       if (times > 10) {
         // Silently stop retrying after 10 attempts
