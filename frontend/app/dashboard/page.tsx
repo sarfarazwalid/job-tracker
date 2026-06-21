@@ -76,6 +76,8 @@ function DashboardContent() {
   const [upcomingInterviews, setUpcomingInterviews] = useState<Interview[]>([]);
   const [recentApps, setRecentApps] = useState<JobApplication[]>([]);
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -113,7 +115,24 @@ function DashboardContent() {
     };
 
     fetchDashboard();
-  }, [router]);
+
+    // Refresh stats when user returns to the tab (after changing status on another page)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        setRefreshKey((k) => k + 1);
+      }
+    };
+    const handleFocus = () => {
+      setRefreshKey((k) => k + 1);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [router, refreshKey]);
 
   // Derived metrics
   const active = total - (byStatus["Rejected"] || 0) - (byStatus["Withdrawn"] || 0) - (byStatus["Accepted"] || 0);
@@ -134,7 +153,7 @@ function DashboardContent() {
   return (
     <Sidebar>
       <PageTransition>
-        <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
+        <div className="py-6 lg:py-8 pl-6 lg:pl-8 pr-4 lg:pr-6 max-w-[1200px] mx-auto">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-[var(--text-primary)]">Dashboard</h1>
@@ -161,18 +180,18 @@ function DashboardContent() {
           ) : (
             <>
               {/* Summary Metrics */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
                 {statCards.map((stat, i) => (
                   <RevealOnScroll key={stat.label} delay={i * 0.05}>
-                  <Card hover className="h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] sm:text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">{stat.label}</span>
-                      <div className={cn("h-6 w-6 sm:h-7 sm:w-7 rounded-lg bg-[var(--bg-elevated)] flex items-center justify-center", stat.color)}>
+                  <Card hover className="h-full min-h-[130px] overflow-hidden">
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      <span className="text-[10px] sm:text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider leading-tight">{stat.label}</span>
+                      <div className={cn("h-8 w-8 rounded-xl bg-[var(--bg-elevated)] flex items-center justify-center shrink-0", stat.color)}>
                         {stat.icon}
                       </div>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
-                      <CountUp target={stat.value} duration={1} />{stat.suffix || ""}
+                    <div className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] leading-none">
+                      <CountUp target={stat.value} duration={1} />
                     </div>
                   </Card>
                   </RevealOnScroll>
@@ -203,18 +222,18 @@ function DashboardContent() {
                         {upcomingInterviews.map((interview) => (
                           <div
                             key={interview._id}
-                            className="flex items-center gap-3 p-3 rounded-xl bg-white/60 border border-white/60 hover:bg-white/80 transition-all cursor-pointer"
+                            className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.06)] transition-all cursor-pointer"
                             onClick={() => router.push("/calendar")}
                           >
-                            <div className="h-8 w-8 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
+                            <div className="h-8 w-8 rounded-lg bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] flex items-center justify-center shrink-0">
                               <Calendar className="h-4 w-4" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-medium text-[var(--text-primary)] truncate">{interview.companyName}</p>
-                              <p className="text-xs text-[var(--text-muted)] truncate">{interview.jobTitle}</p>
+                              <p className="text-xs text-[var(--text-secondary)] truncate">{interview.jobTitle}</p>
                             </div>
                             <div className="text-right shrink-0">
-                              <p className="text-xs font-medium text-[var(--text-secondary)]">
+                              <p className="text-xs font-medium text-[var(--text-primary)]">
                                 {new Date(interview.interviewDate).toLocaleDateString("en-US", {
                                   weekday: "short",
                                   month: "short",
@@ -258,16 +277,16 @@ function DashboardContent() {
                         {recentApps.map((app) => (
                           <div
                             key={app._id}
-                            className="flex items-center gap-3 p-3 rounded-xl bg-white/60 border border-white/60 hover:bg-white/80 transition-all cursor-pointer"
+                            className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.06)] transition-all cursor-pointer"
                             onClick={() => router.push("/applications")}
                           >
-                            <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                            <div className="h-8 w-8 rounded-lg bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] flex items-center justify-center shrink-0">
                               <Briefcase className="h-4 w-4" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-medium text-[var(--text-primary)] truncate">{app.companyName}</p>
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="text-xs text-[var(--text-muted)] truncate">{app.jobTitle}</span>
+                                <span className="text-xs text-[var(--text-secondary)] truncate">{app.jobTitle}</span>
                                 {app.location && (
                                   <>
                                     <span className="text-[var(--text-muted)]">·</span>

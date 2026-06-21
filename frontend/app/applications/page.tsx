@@ -351,14 +351,14 @@ function ApplicationsContent() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               {statCards.map((stat, i) => (
                 <RevealOnScroll key={stat.label} delay={i * 0.05}>
-                  <Card hover>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">{stat.label}</span>
-                      <div className={cn("h-7 w-7 rounded-lg bg-[var(--bg-elevated)] flex items-center justify-center", stat.color)}>
+                  <Card hover className="!rounded-2xl">
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="text-[10px] sm:text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">{stat.label}</span>
+                      <div className={cn("h-6 w-6 sm:h-7 sm:w-7 rounded-lg bg-[var(--bg-elevated)] flex items-center justify-center shrink-0", stat.color)}>
                         {stat.icon}
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-[var(--text-primary)]">
+                    <div className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] leading-none">
                       <CountUp target={stat.value} duration={1} />
                     </div>
                   </Card>

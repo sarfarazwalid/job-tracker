@@ -117,6 +117,7 @@ interface AnimatedDropdownProps {
 export function AnimatedDropdown({ options, value, onChange, placeholder = "Select", className, triggerLabel }: AnimatedDropdownProps) {
   const [open, setOpen] = useState(false);
   const coordsRef = useRef({ top: 0, left: 0, width: 180 });
+  const maxHRef = useRef(288);
   const ref = useRef<HTMLDivElement>(null);
   const portalRef = useRef<HTMLDivElement>(null);
 
@@ -125,11 +126,13 @@ export function AnimatedDropdown({ options, value, onChange, placeholder = "Sele
   const toggleOpen = useCallback(() => {
     if (!open && ref.current) {
       const rect = ref.current.getBoundingClientRect();
+      const computedMax = Math.min(288, Math.max(120, window.innerHeight - 32 - rect.bottom));
       coordsRef.current = {
         top: rect.bottom + 4,
         left: rect.left,
         width: Math.max(ref.current.offsetWidth, 180),
       };
+      maxHRef.current = computedMax;
     }
     setOpen((v) => !v);
   }, [open]);
@@ -188,31 +191,34 @@ export function AnimatedDropdown({ options, value, onChange, placeholder = "Sele
               top: coordsRef.current.top,
               left: coordsRef.current.left,
               width: coordsRef.current.width,
+              maxHeight: maxHRef.current,
             }}
           >
-            <div className="py-1">
-              {options.map((opt) => {
-                const isSelected = opt.value === value;
-                return (
-                  <button
-                    key={opt.value}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onChange(opt.value);
-                      requestAnimationFrame(() => setOpen(false));
-                    }}
-                    className={cn(
-                      "flex w-full items-center justify-between px-3 py-2 text-sm transition-colors duration-150",
-                      isSelected
-                        ? "bg-[var(--accent-glow-strong)] text-[var(--accent-primary)] font-medium"
-                        : "text-[var(--text-secondary)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent-primary)]"
-                    )}
-                  >
-                    <span className="truncate">{opt.label}</span>
-                    {isSelected && <Check className="h-3.5 w-3.5 shrink-0" />}
-                  </button>
-                );
-              })}
+            <div className="max-h-[240px] overflow-y-auto overscroll-contain custom-scrollbar">
+              <div className="py-1">
+                {options.map((opt) => {
+                  const isSelected = opt.value === value;
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onChange(opt.value);
+                        requestAnimationFrame(() => setOpen(false));
+                      }}
+                      className={cn(
+                        "flex w-full items-center justify-between px-3 py-2 text-sm transition-colors duration-150",
+                        isSelected
+                          ? "bg-[var(--accent-glow-strong)] text-[var(--accent-primary)] font-medium"
+                          : "text-[var(--text-secondary)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent-primary)]"
+                      )}
+                    >
+                      <span className="truncate">{opt.label}</span>
+                      {isSelected && <Check className="h-3.5 w-3.5 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </motion.div>,
           document.body
