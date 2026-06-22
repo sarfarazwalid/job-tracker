@@ -674,7 +674,7 @@ export function Navbar({ onAIFeaturesOpen }: NavbarProps) {
           <div className="relative">
             <Logo size="md" showText={false} />
           </div>
-          <span className="text-lg font-bold tracking-tight text-[#F5F5F0] group-hover:text-[#FF6B00] transition-colors duration-300">
+          <span className="text-lg font-bold tracking-tight text-[#F5F5F0] group-hover:text-[#FF6B00] transition-colors duration-300 font-orbitron leading-none self-center">
             JobTracker
           </span>
         </Link>

@@ -239,6 +239,11 @@ select:focus {
   border-color: rgba(255, 107, 0, 0.5);
 }
 
+/* Brand font utility — applies Orbitron only to explicitly marked elements */
+.font-orbitron {
+  font-family: var(--font-orbitron), sans-serif;
+}
+
 /* Mono numbers utility — JetBrains Mono via CSS for numbers/dates/IDs */
 .mono-number {
   font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", monospace;

@@ -1,6 +1,9 @@
 {
   "name": "job-tracker-backend",
   "version": "1.0.0",
+  "engines": {
+  "node": "24.x"
+},
   "description": "Job Application Tracker - Node.js/Express/MongoDB backend",
   "main": "src/server.js",
   "scripts": {

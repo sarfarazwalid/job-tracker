@@ -38,7 +38,7 @@ export function Logo({ size = "md", showText = true, className = "" }: LogoProps
       </motion.div>
 
       {showText && (
-        <span className={`font-bold tracking-tight text-[#FFFFFF] ${text}`}>
+        <span className={`font-bold tracking-tight text-[#FFFFFF] ${text} font-orbitron leading-none self-center`}>
           JobTracker
         </span>
       )}

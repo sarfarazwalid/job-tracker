@@ -384,10 +384,7 @@ export default function AIAnalyzePage() {
                     className="flex-1"
                   >
                     {isAnalyzing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Analyzing resume...
-                      </>
+                      <>Analyzing resume...</>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
@@ -557,15 +554,27 @@ export default function AIAnalyzePage() {
                     key="loading"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
                   >
                     <Card glow className="text-center py-12">
-                      <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-primary)] mx-auto mb-4" />
+                      <div className="mx-auto mb-4 inline-flex items-center justify-center">
+                        <motion.span
+                          className="h-8 w-8"
+                          style={{ display: "inline-block" }}
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8 text-[var(--accent-primary)]">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                        </motion.span>
+                      </div>
                       <p className="text-sm font-medium text-[var(--text-primary)]">
                         Analyzing resume...
                       </p>
                       <p className="text-xs text-[var(--text-muted)] mt-1">
-                        AI is comparing your resume with the job requirements
+                        AI is comparing your resume against the job description
                       </p>
                     </Card>
                   </motion.div>
