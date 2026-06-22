@@ -153,7 +153,7 @@ function DashboardContent() {
   return (
     <Sidebar>
       <PageTransition>
-        <div className="py-6 lg:py-8 pl-6 lg:pl-8 pr-4 lg:pr-6 max-w-[1200px] mx-auto">
+        <div className="py-6 lg:py-8 pl-8 lg:pl-10 pr-3 lg:pr-[18px] max-w-[1400px]">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-[var(--text-primary)]">Dashboard</h1>
