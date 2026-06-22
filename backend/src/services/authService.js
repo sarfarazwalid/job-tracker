@@ -1,4 +1,10 @@
 const User = require('../models/User');
+const JobApplication = require('../models/JobApplication');
+const Company = require('../models/Company');
+const AIResult = require('../models/AIResult');
+const AIConversation = require('../models/AIConversation');
+const Interview = require('../models/Interview');
+const Notification = require('../models/Notification');
 const tokenService = require('./tokenService');
 const logger = require('../utils/logger');
 
@@ -44,7 +50,7 @@ class AuthService {
     }).select('+password');
 
     if (!user) {
-      const error = new Error('Invalid username or password.');
+      const error = new Error('Account does not exist.');
       error.statusCode = 401;
       throw error;
     }
@@ -57,7 +63,7 @@ class AuthService {
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      const error = new Error('Invalid username or password.');
+      const error = new Error('Invalid email or password.');
       error.statusCode = 401;
       throw error;
     }
@@ -202,6 +208,36 @@ class AuthService {
 
     logger.info(`Password changed for user: ${user.username}`);
     return { detail: 'Password changed successfully.' };
+  }
+
+  /**
+   * Delete user account and all related data
+   */
+  async deleteAccount(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      const error = new Error('User not found.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const username = user.username;
+
+    // Delete all related data
+    await Promise.all([
+      JobApplication.deleteMany({ userId }),
+      Company.deleteMany({ userId }),
+      AIResult.deleteMany({ userId }),
+      AIConversation.deleteMany({ userId }),
+      Interview.deleteMany({ userId }),
+      Notification.deleteMany({ userId }),
+    ]);
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    logger.info(`Account deleted for user: ${username}`);
+    return { detail: 'Account deleted successfully.' };
   }
 
   /**

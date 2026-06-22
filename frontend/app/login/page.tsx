@@ -29,10 +29,10 @@ export default function LoginPage() {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/applications");
     } catch (err: any) {
-      if (err?.response?.status === 401) {
-        setError("Invalid username or password");
-      } else if (err?.response?.data?.detail) {
+      if (err?.response?.data?.detail) {
         setError(err.response.data.detail);
+      } else if (err?.response?.status === 401) {
+        setError("Invalid username or password");
       } else if (err?.request) {
         setError("Unable to reach the server. Please try again later.");
       } else {

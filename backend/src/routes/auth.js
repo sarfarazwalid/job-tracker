@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { register, login, refresh, logout, getMe, updateProfile, changePassword } = require('../controllers/authController');
+const { register, login, refresh, logout, getMe, updateProfile, changePassword, deleteAccount } = require('../controllers/authController');
 const { authenticate } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 
@@ -72,6 +72,13 @@ router.get('/me', authenticate, getMe);
  * @access  Private
  */
 router.put('/me', authenticate, updateProfile);
+
+/**
+ * @route   DELETE /api/auth/me
+ * @desc    Delete user account
+ * @access  Private
+ */
+router.delete('/me', authenticate, deleteAccount);
 
 /**
  * @route   POST /api/auth/change-password

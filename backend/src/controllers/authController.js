@@ -74,6 +74,18 @@ const updateProfile = async (req, res, next) => {
 };
 
 /**
+ * DELETE /api/auth/me - Delete user account
+ */
+const deleteAccount = async (req, res, next) => {
+  try {
+    const result = await authService.deleteAccount(req.user.id);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * POST /api/auth/change-password - Change password
  */
 const changePassword = async (req, res, next) => {
@@ -85,4 +97,4 @@ const changePassword = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, refresh, logout, getMe, updateProfile, changePassword };
+module.exports = { register, login, refresh, logout, getMe, updateProfile, changePassword, deleteAccount };

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Settings as SettingsIcon,
   User,
@@ -16,11 +16,13 @@ import {
   CheckCircle2,
   AlertCircle,
   X,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import apiClient from "../lib/api";
 import Sidebar from "../components/sidebar";
 import { PageTransition, RevealOnScroll } from "../components/motion-provider";
-import { Button, Input, Textarea, Card, Divider, Skeleton } from "../components/ui";
+import { Button, Input, Textarea, Card, Divider, Skeleton, ModalOverlay } from "../components/ui";
 import { cn } from "../lib/utils";
 
 interface UserProfile {
@@ -66,6 +68,8 @@ export default function SettingsPage() {
   });
   const [showPasswords, setShowPasswords] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -161,6 +165,24 @@ export default function SettingsPage() {
       setMessage({ type: "error", text: err?.response?.data?.detail || "Failed to change password." });
     } finally {
       setChangingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setMessage(null);
+    try {
+      await apiClient.delete("/auth/me");
+      // Clear all auth data
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user");
+      // Redirect to landing page
+      window.location.href = "/";
+    } catch (err: any) {
+      setMessage({ type: "error", text: err?.response?.data?.detail || "Failed to delete account." });
+      setDeleting(false);
+      setShowDeleteModal(false);
     }
   };
 
@@ -388,14 +410,101 @@ export default function SettingsPage() {
                   <span className="text-sm font-medium text-[var(--text-primary)]">{user?.email}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-[var(--bg-elevated)]">
-                  <span className="text-sm text-[var(--text-secondary)]">Member Since</span>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">
-                    {user?._id ? "Active" : "—"}
-                  </span>
+                  <span className="text-sm text-[var(--text-secondary)]">Active</span>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">Yes</span>
                 </div>
               </div>
             </Card>
           </RevealOnScroll>
+
+          {/* Danger Zone */}
+          <RevealOnScroll delay={0.2}>
+            <Card hover={false} className="mt-6 border-red-500/20 bg-red-500/[0.03]">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                    <Trash2 className="h-5 w-5 text-red-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-semibold text-[var(--text-primary)]">Delete Account</h2>
+                    <p className="text-xs text-[var(--text-secondary)]">
+              Permanently delete your account and all associated data
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="!border-red-500/30 !text-red-400 hover:!bg-red-500/10 hover:!text-red-300"
+                >
+                  <AlertTriangle className="h-4 w-4" />
+                  Delete Account
+                </Button>
+              </div>
+            </Card>
+          </RevealOnScroll>
+
+          {/* Delete Confirmation Modal */}
+          <AnimatePresence>
+            {showDeleteModal && (
+              <ModalOverlay onClose={() => !deleting && setShowDeleteModal(false)}>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+                      <AlertTriangle className="h-5 w-5 text-red-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">Delete Account</h3>
+                  </div>
+
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                    Are you sure you want to permanently delete your account?
+                  </p>
+
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    The following data will be removed:
+                  </p>
+
+                  <ul className="space-y-2">
+                    {[
+                      "Profile information",
+                      "Job applications",
+                      "Companies",
+                      "Analytics",
+                      "AI insights",
+                      "Notifications",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-red-400 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="text-sm text-red-400 font-medium">
+                    This action cannot be undone.
+                  </p>
+
+                  <div className="flex items-center justify-end gap-3 pt-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setShowDeleteModal(false)}
+                      disabled={deleting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleDeleteAccount}
+                      loading={deleting}
+                      className="!bg-red-500 hover:!bg-red-600 text-white border-transparent"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete Account
+                    </Button>
+                  </div>
+                </div>
+              </ModalOverlay>
+            )}
+          </AnimatePresence>
         </div>
       </PageTransition>
     </Sidebar>

@@ -5,7 +5,11 @@ const env = require('./env');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(env.MONGODB_URI);
-    logger.info(`MongoDB connected: ${conn.connection.host}/${conn.connection.name}`);
+
+    logger.info(
+      `MongoDB connected: ${conn.connection.host}/${conn.connection.name}`
+    );
+
     return conn;
   } catch (error) {
     logger.error(`MongoDB connection error: ${error.message}`);
@@ -13,7 +17,6 @@ const connectDB = async () => {
   }
 };
 
-// Handle connection events
 mongoose.connection.on('disconnected', () => {
   logger.warn('MongoDB disconnected');
 });
